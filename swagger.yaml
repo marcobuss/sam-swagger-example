@@ -21,9 +21,10 @@ paths:
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetLambdaFunction.Arn}/invocations"
-          passthroughBehavior: "when_no_match"
-          httpMethod: "GET"
-          type: "aws_proxy"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+        responses: {}
       summary: List All Questions
       parameters:
         - name: "Access-Control-Allow-Origin"
@@ -58,9 +59,10 @@ paths:
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PostLambdaFunction.Arn}/invocations"
-          passthroughBehavior: "when_no_match"
-          httpMethod: "POST"
-          type: "aws_proxy"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+        responses: {}
       summary: Create a New Question
       parameters:
         - name: body
@@ -162,10 +164,7 @@ definitions:
     required:
       - question
       - choices
-    example:
-      question: Favourite programming language?
-      choices:
-        - Swift
-        - Python
-        - Objective-C
-        - Ruby
+# Don´t use examples in definitions ==> results in deployment error.
+#    example:
+#      question: 'Favourite programming language?'
+#      choices: ['Swift', 'Python', 'Objective-C', 'Ruby']
