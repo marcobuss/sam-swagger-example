@@ -18,7 +18,18 @@ paths:
   /questions:
     x-summary: Questions Collection
     get:
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetLambdaFunction.Arn}/invocations"
+          passthroughBehavior: "when_no_match"
+          httpMethod: "GET"
+          type: "aws_proxy"
       summary: List All Questions
+      parameters:
+        - name: "Access-Control-Allow-Origin"
+          in: "header"
+          required: false
+          type: "string"
       responses:
         200:
           description: Successful Response
@@ -44,6 +55,12 @@ paths:
         You may create your own question using this action. It takes a JSON
         object containing a question and a collection of answers in the
         form of choices.
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PostLambdaFunction.Arn}/invocations"
+          passthroughBehavior: "when_no_match"
+          httpMethod: "POST"
+          type: "aws_proxy"
       summary: Create a New Question
       parameters:
         - name: body
@@ -51,6 +68,10 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/QuestionRequest'
+        - name: "Access-Control-Allow-Origin"
+          in: "header"
+          required: false
+          type: "string"
       responses:
         201:
           description: ''
@@ -69,6 +90,36 @@ paths:
                     votes: 0
                   - choice: Ruby
                     votes: 0
+    options:
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Credentials:
+              type: "string"
+            Access-Control-Allow-Headers:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Credentials: "'false'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET,POST'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        passthroughBehavior: "when_no_match"
+        requestTemplates:
+          application/json: "{statusCode:200}"
+        type: "mock"
 definitions:
   Question:
     title: Question
