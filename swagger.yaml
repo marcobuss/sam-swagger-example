@@ -51,6 +51,8 @@ paths:
                     votes: 512
                   - choice: Ruby
                     votes: 256
+                  - choice: C++
+                    votes: 20
     post:
       description: >-
         You may create your own question using this action. It takes a JSON
